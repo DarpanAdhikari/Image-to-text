@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Extraction from Image</title>
+</head>
+<body>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="output"></div>
+
+    <script src="https://tesseract.projectnaptha.com/tesseract.js"></script>
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const output = document.getElementById('output');
+
+        imageInput.addEventListener('change', function () {
+            const file = imageInput.files[0];
+            if (file) {
+                const worker = new Tesseract.createWorker();
+                (async () => {
+                    await worker.load();
+                    await worker.loadLanguage('eng');
+                    await worker.initialize('eng');
+                    const { data: { text } } = await worker.recognize(file);
+                    output.textContent = text;
+                    await worker.terminate();
+                })();
+            }
+        });
+    </script>
+</body>
+</html>
